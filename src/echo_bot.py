@@ -45,11 +45,18 @@ class EchoBot:
 
                 message_text = event.raw['object']['message']['text']
 
-                self.session.method("messages.send", {
+                send_values = {
                     'peer_id': sender_id,
                     'message': message_text if message_text else '',
                     'attachment': ','.join(attachments),
-                    'forward_messages': ','.join(
-                        [str(message_data['id']) for message_data in event.raw['object']['message']['fwd_messages']]),
                     'random_id': 0
-                })
+                }
+
+                if 'reply_message' in event.raw['object']['message']:
+                    send_values['reply_to'] = event.raw['object']['message']['reply_message']['id']
+
+                if event.raw['object']['message']['fwd_messages']:
+                    send_values['forward_messages'] = ','.join(
+                        [str(message_data['id']) for message_data in event.raw['object']['message']['fwd_messages']])
+
+                self.session.method("messages.send", send_values)
