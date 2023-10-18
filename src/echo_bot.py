@@ -1,5 +1,6 @@
 import vk_api
 import os
+import json
 
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from dotenv import load_dotenv
@@ -22,17 +23,23 @@ class EchoBot:
                     for attachment in event.raw['object']['message']['attachments']:
                         attachment_type = attachment['type']
 
-                        attachment_id = attachment[attachment_type]['id']
-                        owner_id = attachment[attachment_type]['owner_id']
-
                         match attachment_type:
                             case 'photo':
+                                attachment_id = attachment[attachment_type]['id']
+                                owner_id = attachment[attachment_type]['owner_id']
+
                                 access_key = attachment[attachment_type]['access_key']
 
                                 attachments.append(f"{attachment_type}{owner_id}_{attachment_id}_{access_key}")
 
                             case 'audio' | 'video':
+                                attachment_id = attachment[attachment_type]['id']
+                                owner_id = attachment[attachment_type]['owner_id']
+
                                 attachments.append(f"{attachment_type}{owner_id}_{attachment_id}")
+
+                            case 'link':
+                                attachments.append(f"{attachment[attachment_type]['url']}")
 
                 sender_id = event.raw['object']['message']['from_id']
 
