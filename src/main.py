@@ -1,8 +1,10 @@
 from echo_bot import EchoBot
 
 
-def main():
+def main() -> None:
     bot = EchoBot()
+
+    bot.run_long_pool()
 
 
 if __name__ == '__main__':
