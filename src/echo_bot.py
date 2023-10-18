@@ -1,8 +1,8 @@
 import vk_api
 import os
-import json
 
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.exceptions import ApiError
 from dotenv import load_dotenv
 
 
@@ -12,7 +12,13 @@ class EchoBot:
 
         self.session = vk_api.VkApi(token=os.getenv('TOKEN'))
 
-        self.long_poll = VkBotLongPoll(self.session, os.getenv('GROUP_ID'))
+        try:
+            self.long_poll = VkBotLongPoll(self.session, os.getenv('GROUP_ID'))
+        except ApiError as err:
+            print(err)
+            exit(-1)
+        else:
+            print('Bot has been successfully launched')
 
     def run_long_pool(self) -> None:
         for event in self.long_poll.listen():
