@@ -25,6 +25,15 @@ class EchoBot:
             if event.type == VkBotEventType.MESSAGE_NEW:
                 sender_id = event.raw['object']['message']['from_id']
 
+                if event.raw['object']['message']['text'] == 'Начать':
+                    self.session.method("messages.send", {
+                        'peer_id': sender_id,
+                        'message': 'Привет!\nПришли мне картинку, и я отправлю тебе ее в ответ\n',
+                        'random_id': 0
+                    })
+
+                    continue
+
                 if ('reply_message' in event.raw['object']['message'] or
                         len(event.raw['object']['message']['fwd_messages']) != 0 or
                         {attachment['type'] for attachment in event.raw['object']['message']['attachments']} != {
